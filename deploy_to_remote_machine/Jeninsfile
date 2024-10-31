@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Repository') {
+            steps {
+                retry(3) {
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[url: 'https://github.com/sohaib1khan/kubernetes_craft.git']],
+                        extensions: [[$class: 'CloneOption', timeout: 30]]
+                    ])
+                }
+            }
+        }
+
+        stage('Check for Changes in Specific Directory') {
+            steps {
+                script {
+                    def changes = sh(script: "git diff --name-only HEAD HEAD~1", returnStdout: true).trim()
+                    if (changes.contains('Skaffold_Deployments/nginx_app_test/k8s/')) {
+                        currentBuild.description = "Changes detected in nginx_app_test/k8s"
+                    } else {
+                        echo "No changes detected in the target directory. Skipping deployment."
+                        currentBuild.result = 'NOT_BUILT'
+                        return
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Nginx Application') {
+            when {
+                expression {
+                    currentBuild.result != 'NOT_BUILT'
+                }
+            }
+            steps {
+                sh '''
+                kubectl apply -f Skaffold_Deployments/nginx_app_test/k8s/nginx-deployment.yaml
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Nginx deployment completed successfully.'
+        }
+        failure {
+            echo 'There was an error deploying the Nginx application. Please check the logs.'
+        }
+    }
+}

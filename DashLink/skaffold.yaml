@@ -1,0 +1,16 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: dashlink
+build:
+  artifacts:
+  - image: registry.helixx.cloud/dashlink  # Update the image path to your private registry
+    context: .        # Set the context to the root of the project
+    docker:
+      dockerfile: Dockerfile  # Reference to your Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - k8s/k8s-deployment.yaml  # Path to the deployment manifest
+    - k8s/k8s-service.yaml     # Path to the service manifest
+    - k8s/hpa.yaml         # Path to the HPA manifest

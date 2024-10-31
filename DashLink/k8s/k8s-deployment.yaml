@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashlink-deployment
+  namespace: dashlink  # Ensure you're in the right namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashlink
+  template:
+    metadata:
+      labels:
+        app: dashlink
+    spec:
+      containers:
+      - name: dashlink
+        image: registry.helixx.cloud/dashlink:latest  # Ensure an image tag is provided
+        ports:
+        - containerPort: 5021
+        volumeMounts:
+        - name: dashlink-data
+          mountPath: /app/data
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      volumes:
+      - name: dashlink-data
+        hostPath:
+          path: /home/devk3s/dashlink
+          type: Directory
+      imagePullSecrets:
+      - name: regcred  # Ensure the secret exists in the dashlink namespace

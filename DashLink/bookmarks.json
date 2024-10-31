@@ -1,0 +1,28 @@
+{
+    "To-Do": [
+        {
+            "name": "Google",
+            "link": "https://www.google.com"
+        },
+        {
+            "name": "Learn Linux Monitoring",
+            "link": "https://www.wikipedia.org/wiki/Linux"
+        }
+    ],
+    "Monitoring_Dash": [
+        {
+            "name": "Grafana Dashboard",
+            "link": "https://play.grafana.org"
+        },
+        {
+            "name": "Uptime Monitor",
+            "link": "https://uptimerobot.com/dashboard"
+        }
+    ],
+    "Media": [
+        {
+            "name": "YouTube",
+            "link": "https://www.youtube.com"
+        }
+    ]
+}

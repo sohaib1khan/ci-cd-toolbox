@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG_CREDENTIALS = 'kubeconfig-file' // The correct Secret file ID for kubeconfig
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Check out the latest code from the repo
+                git branch: 'main', url: 'https://github.com/sohaib1khan/kubernetes_craft.git'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Use Kubeconfig credentials as a Secret file
+                    withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIALS}", variable: 'KUBECONFIG')]) {
+                        sh 'kubectl apply -f Skaffold_Deployments/DashLink/k8s/'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed.'
+        }
+    }
+}
