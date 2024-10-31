@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dashlink-deployment
-  namespace: dashlink  # Ensure you're in the right namespace
+  namespace: dashlink-gitops  # Ensure you're in the right namespace
 spec:
   replicas: 1
   selector:
